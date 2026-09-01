@@ -1,18 +1,23 @@
 # MarkItDown GUI
 
 A small desktop app that puts a graphical front end on Microsoft's
-[markitdown](https://github.com/microsoft/markitdown) library. Pick a file, pick
-where to save it, click **Convert**, and you get a Markdown file.
+[markitdown](https://github.com/microsoft/markitdown) library. Pick your files,
+pick a folder to save them in, click **Convert**, and you get a Markdown file
+for each one.
 
 The interface is built with `tkinter`, which ships with Python, so the only real
 dependency is `markitdown` itself.
 
 ## Features
 
-- File pickers for the input document and the output `.md` file
-- Output path is suggested automatically from the input file name
+- Pick any number of input files at once and manage them in a list
+- Choose a single output folder; each file is written there as `<name>.md`
+- Optional overwrite toggle, so existing Markdown files can be left alone
+- Files with the same name from different folders get `_2`, `_3`, … suffixes
+  instead of clobbering each other
 - Conversion runs on a background thread, so the window stays responsive
-- A status log plus dialog boxes reporting success or the exact error
+- A progress bar plus a per-file status log and a summary of how many files
+  converted, were skipped, or failed
 
 ## Requirements
 
@@ -47,11 +52,17 @@ checks that Python and `markitdown` are available, offers to install
 
 ## Using it
 
-1. **Browse** to the file you want to convert.
-2. Adjust the suggested output path, or use **Save as** to choose another.
-3. Click **Convert**.
-4. The status box reports where the Markdown file was written, or what went
-   wrong.
+1. **Add files** to pick one or more documents. You can click **Add files**
+   again to append more; **Remove** drops the rows you selected in the list and
+   **Clear** empties it.
+2. Set the **Output folder**. It defaults to the folder of the first file you
+   added, and **Browse** picks another. The folder is created if it does not
+   exist yet.
+3. Decide whether to leave *Overwrite existing Markdown files* ticked. Unticked,
+   any file whose `.md` already exists in the output folder is skipped.
+4. Click **Convert**.
+5. The progress bar advances per file and the status box lists each conversion,
+   skip, or error, followed by a summary.
 
 ## Supported formats
 
