@@ -43,12 +43,10 @@ python markitdown_gui.py
 ```
 
 On Windows you can double-click `run_markitdown_gui.bat` instead. That script
-checks that Python and `markitdown` are available, offers to install
-`markitdown` from a local checkout if it is missing, and then launches the app.
-
-> Note: the local-install fallback in the `.bat` file points at
-> `C:\Users\ozd504\markitdown`. Edit those paths if your copy lives elsewhere,
-> or delete that block if you installed `markitdown` from PyPI.
+locates a working Python (falling back to a miniforge3 install under
+`%LOCALAPPDATA%` if `python` on PATH is missing or broken, e.g. the Windows
+Store stub alias), installs `markitdown` from PyPI if it isn't already
+present, and then launches the app.
 
 ## Using it
 

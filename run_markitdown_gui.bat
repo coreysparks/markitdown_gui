@@ -5,8 +5,13 @@ REM Place this file in the same folder as markitdown_gui.py
 cd /d "%~dp0"
 
 echo Checking for Python...
-python --version >nul 2>&1
-if errorlevel 1 (
+set "PYTHON_EXE=python"
+where python >nul 2>&1
+if errorlevel 1 set "PYTHON_EXE="
+if not defined PYTHON_EXE (
+    if exist "%LOCALAPPDATA%\miniforge3\python.exe" set "PYTHON_EXE=%LOCALAPPDATA%\miniforge3\python.exe"
+)
+if not defined PYTHON_EXE (
     echo Python was not found on this computer.
     echo Install Python from https://www.python.org/downloads/ and try again.
     echo During install, check the box that says "Add Python to PATH".
@@ -14,25 +19,28 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo Checking for the markitdown package...
-python -c "import markitdown" >nul 2>&1
+"%PYTHON_EXE%" --version >nul 2>&1
 if errorlevel 1 (
-    echo The markitdown package was not found through pip.
-    echo Trying to install it from your local copy...
-
-    if exist "C:\Users\ozd504\markitdown\packages\markitdown\pyproject.toml" (
-        python -m pip install -e "C:\Users\ozd504\markitdown\packages\markitdown[pdf,docx,pptx,xlsx,xls,outlook]"
-    ) else if exist "C:\Users\ozd504\markitdown\pyproject.toml" (
-        python -m pip install -e "C:\Users\ozd504\markitdown[pdf,docx,pptx,xlsx,xls,outlook]"
+    if exist "%LOCALAPPDATA%\miniforge3\python.exe" (
+        set "PYTHON_EXE=%LOCALAPPDATA%\miniforge3\python.exe"
     ) else (
-        echo Could not find a pyproject.toml file in C:\Users\ozd504\markitdown.
-        echo Open that folder and look for a pyproject.toml file, then tell me
-        echo which subfolder it is in so I can point the installer at it.
+        echo Python was not found on this computer.
+        echo Install Python from https://www.python.org/downloads/ and try again.
+        echo During install, check the box that says "Add Python to PATH".
         pause
         exit /b 1
     )
+)
 
-    python -c "import markitdown" >nul 2>&1
+echo Using Python at: %PYTHON_EXE%
+
+echo Checking for the markitdown package...
+"%PYTHON_EXE%" -c "import markitdown" >nul 2>&1
+if errorlevel 1 (
+    echo The markitdown package was not found. Installing it from PyPI...
+    "%PYTHON_EXE%" -m pip install "markitdown[all]"
+
+    "%PYTHON_EXE%" -c "import markitdown" >nul 2>&1
     if errorlevel 1 (
         echo The install did not finish correctly. See the messages above for the reason.
         pause
@@ -41,6 +49,6 @@ if errorlevel 1 (
 )
 
 echo Starting MarkItDown GUI...
-python markitdown_gui.py
+"%PYTHON_EXE%" markitdown_gui.py
 
 pause
